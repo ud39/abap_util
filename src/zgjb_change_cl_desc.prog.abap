@@ -78,5 +78,95 @@ ENDMODULE.
 *& <--  p2        text
 *&---------------------------------------------------------------------*
 FORM display_alv .
+  IF gr_alvgrid IS INITIAL.
+      gr_ccontainer = NEW cl_gui_custom_container(
+        container_name              =  gc_custom_control_name  " Name of the dynpro CustCtrl name to link this container to
+      ).
+      IF sy-subrc <> 0.
+      ENDIF.
+  ENDIF.
+
+  gr_alvgrid = NEW cl_gui_alv_grid(
+*    i_shellstyle            = 0                " Control Style
+*    i_lifetime              =                  " Lifetime
+    i_parent                = gr_ccontainer                 " Parent-Container
+*    i_appl_events           = space            " Ereignisse als Applikationsevents registrieren
+*    i_parentdbg             =                  " Internal, donnot use.
+*    i_applogparent          =                  " Container for application log
+*    i_graphicsparent        =                  " Container for graphics
+*    i_name                  =                  " Name
+*    i_fcat_complete         = space            " boolsche Variable (X=true, space=false)
+*    o_previous_sral_handler =
+*    i_use_one_ux_appearance = abap_false
+  ).
+
+  PERFORM prepare_field_catalog CHANGING gt_fieldcat.
+
+  PERFORM prepare_layout CHANGING gs_layout.
+
+  gr_alvgrid->set_table_for_first_display(
+    EXPORTING
+*      i_buffer_active               =                  " Pufferung aktiv
+*      i_bypassing_buffer            =                  " Puffer ausschalten
+*      i_consistency_check           =                  " Starte Konsistenzverprobung für Schnittstellefehlererkennung
+*      i_structure_name              =                  " Strukturname der internen Ausgabetabelle
+*      is_variant                    =                  " Anzeigevariante
+*      i_save                        =                  " Anzeigevariante sichern
+      i_default                     = 'X'              " Defaultanzeigevariante
+      is_layout                     = gs_layout                 " Layout
+*      is_print                      =                  " Drucksteuerung
+*      it_special_groups             =                  " Feldgruppen
+*      it_toolbar_excluding          =                  " excludierte Toolbarstandardfunktionen
+*      it_hyperlink                  =                  " Hyperlinks
+*      it_alv_graphics               =                  " Tabelle von der Struktur DTC_S_TC
+*      it_except_qinfo               =                  " Tabelle für die Exception Quickinfo
+*      ir_salv_adapter               =                  " Interface ALV Adapter
+    CHANGING
+      it_outtab                     =  gt_cl        " Ausgabetabelle
+      it_fieldcatalog               =  gt_fieldcat      " Feldkatalog
+*      it_sort                       =                  " Sortierkriterien
+*      it_filter                     =                  " Filterkriterien
+    EXCEPTIONS
+      invalid_parameter_combination = 1                " Parameter falsch
+      program_error                 = 2                " Programmfehler
+      too_many_lines                = 3                " Zu viele Zeilen in eingabebereitem Grid.
+      others                        = 4
+  ).
+  IF SY-SUBRC <> 0.
+*   MESSAGE ID SY-MSGID TYPE SY-MSGTY NUMBER SY-MSGNO
+*     WITH SY-MSGV1 SY-MSGV2 SY-MSGV3 SY-MSGV4.
+  ENDIF.
+
+  gr_alvgrid->refresh_table_display(
+*    EXPORTING
+*      is_stable      =                  " zeilen-/spaltenstabil
+*      i_soft_refresh =                  " Ohne Sortierung, Filter, etc.
+    EXCEPTIONS
+      finished       = 1                " Display wurde beendet ( durch Export ).
+      others         = 2
+  ).
+  IF SY-SUBRC <> 0.
+*   MESSAGE ID SY-MSGID TYPE SY-MSGTY NUMBER SY-MSGNO
+*     WITH SY-MSGV1 SY-MSGV2 SY-MSGV3 SY-MSGV4.
+  ENDIF.
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form prepare_field_catalog
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*&      <-- GT_FIELDCAT
+*&---------------------------------------------------------------------*
+FORM prepare_field_catalog  CHANGING p_gt_fieldcat.
+
+ENDFORM.
+*&---------------------------------------------------------------------*
+*& Form prepare_layout
+*&---------------------------------------------------------------------*
+*& text
+*&---------------------------------------------------------------------*
+*&      <-- GS_LAYOUT
+*&---------------------------------------------------------------------*
+FORM prepare_layout  CHANGING p_gs_layout.
 
 ENDFORM.
