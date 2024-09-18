@@ -53,7 +53,7 @@ INTO TABLE @DATA(gt_cl).
 *    r_container    =                           " Abstracter Container fuer GUI Controls
 *    container_name =
 *  IMPORTING
-*    r_salv_table   = DATA(go_salv)                          " Basisklasse einfache ALV Tabellen
+*    r_salv_table   = DATA(go_salv)                         " Basisklasse einfache ALV Tabellen
 *  CHANGING
 *    t_table        = gt_cl
 *).
@@ -122,7 +122,7 @@ FORM display_alv .
 *      it_except_qinfo               =                  " Tabelle für die Exception Quickinfo
 *      ir_salv_adapter               =                  " Interface ALV Adapter
     CHANGING
-      it_outtab                     =  gt_cl        " Ausgabetabelle
+      it_outtab                     =  gt_cl[]        " Ausgabetabelle
       it_fieldcatalog               =  gt_fieldcat      " Feldkatalog
 *      it_sort                       =                  " Sortierkriterien
 *      it_filter                     =                  " Filterkriterien
@@ -183,6 +183,12 @@ ENDFORM.
 *&---------------------------------------------------------------------*
 *&      <-- GS_LAYOUT
 *&---------------------------------------------------------------------*
-FORM prepare_layout  CHANGING p_gs_layout.
+FORM prepare_layout  CHANGING ps_layout TYPE lvc_s_layo.
+  ps_layout-zebra = 'X'.
+  ps_layout-grid_title = 'Classes'.
+  ps_layout-smalltitle = 'X'.
+ENDFORM.
+
+FORM exclude_tb_functions_ CHANGING pt_exclude TYPE ui_functions.
 
 ENDFORM.
