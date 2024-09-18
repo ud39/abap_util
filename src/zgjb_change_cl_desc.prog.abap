@@ -157,8 +157,24 @@ ENDFORM.
 *&---------------------------------------------------------------------*
 *&      <-- GT_FIELDCAT
 *&---------------------------------------------------------------------*
-FORM prepare_field_catalog  CHANGING p_gt_fieldcat.
+FORM prepare_field_catalog CHANGING pt_fieldcat TYPE lvc_t_fcat.
+  DATA ls_fcat TYPE lvc_s_fcat.
 
+  ls_fcat-fieldname = 'clsname'.
+  ls_fcat-inttype = 'C'.
+  ls_fcat-outputlen = '30'.
+  ls_fcat-coltext = 'Class Name'.
+  ls_fcat-seltext = 'Class Name'.
+  INSERT ls_fcat INTO TABLE pt_fieldcat.
+
+  CLEAR ls_fcat.
+  ls_fcat-fieldname = 'descript'.
+  ls_fcat-ref_table = 'SEOCLASSTX'.
+  ls_fcat-inttype = 'C'.
+  ls_fcat-outputlen = '60'.
+  ls_fcat-coltext = 'Class Description'.
+  ls_fcat-seltext = 'Class Description'.
+  INSERT ls_fcat INTO TABLE pt_fieldcat.
 ENDFORM.
 *&---------------------------------------------------------------------*
 *& Form prepare_layout
